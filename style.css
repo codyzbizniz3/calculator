@@ -18,5 +18,22 @@ body {
     border: 5px solid black;
     width: 400px;
     height: 600px;
+    align-items: flex-start;
+    justify-content: center;
+}
 
+#input-wrap {
+    display: inline-block;
+    height: auto;
+    margin-top: 20px;
+
+    width: 80%;
+}
+
+#input-field {
+    width: 100%;
+    height: 50px;
+    font-size: 30px;
+    text-align: right;
+    border: 2px solid black;
 }
