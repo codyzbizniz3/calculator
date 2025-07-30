@@ -1,19 +1,32 @@
 const inputField = document.getElementById('input-field');
-const buttons = document.querySelectorAll('button');
+const numberButtons = document.querySelectorAll('.number-btn');
 const clearButton = document.getElementById('clear-btn');
 
-buttons.forEach(button => {
+let currentInput = '0';
+let awaitingNewNumber = false;
+
+function updateDisplay() {
+    inputField.value = currentInput;
+}
+
+function clearField() {
+    currentInput = '0';
+    updateDisplay();
+}
+
+numberButtons.forEach(button => {
     button.addEventListener("click", function () {
-        const buttonText = this.textContent;
-        if (inputField.value === '0') {
-            inputField.value = buttonText;
+        const digit = this.textContent;
+
+        if (currentInput === '0' || awaitingNewNumber) {
+            currentInput = digit;
+            awaitingNewNumber = false;
         } else {
-            inputField.value += buttonText;
+            currentInput += digit;
         }
+        updateDisplay()
     });
 
 });
 
-clearButton.addEventListener('click', function () {
-    inputField.value = '0';
-});
+clearButton.addEventListener('click', clearField);
