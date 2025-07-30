@@ -27,8 +27,13 @@ function numberClick() {
     updateDisplay()
 }
 
-function currentOperator() {
+function operatorClick() {
+    const operator = this.textContent;
 
+    if (currentInput !== '0') {
+        currentInput += ` ${operator} `;
+    }
+    updateDisplay();
 }
 
 numberButtons.forEach(button => {
@@ -36,3 +41,7 @@ numberButtons.forEach(button => {
 });
 
 clearButton.addEventListener('click', clearField);
+
+operatorButtons.forEach(button => {
+    button.addEventListener('click', operatorClick)
+});
