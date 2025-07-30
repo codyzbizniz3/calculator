@@ -1,9 +1,10 @@
 const inputField = document.getElementById('input-field');
 const numberButtons = document.querySelectorAll('.number-btn');
 const clearButton = document.getElementById('clear-btn');
-const operatorButtons = document.querySelectorAll('.operator-btn')
+const operatorButtons = document.querySelectorAll('.operator-btn');
+const decimalButton = document.getElementById('decimal-btn')
 
-let currentInput = '0';
+let currentInput = '';//Change this to an empty field
 let awaitingNewNumber = false;
 
 function updateDisplay() {
@@ -11,14 +12,14 @@ function updateDisplay() {
 }
 
 function clearField() {
-    currentInput = '0';
+    currentInput = '';
     updateDisplay();
 }
 
 function numberClick() {
     const digit = this.textContent;
 
-    if (currentInput === '0' || awaitingNewNumber) {
+    if (currentInput === '' || awaitingNewNumber) {
         currentInput = digit;
         awaitingNewNumber = false;
     } else {
@@ -27,12 +28,20 @@ function numberClick() {
     updateDisplay()
 }
 
+//Handle initial input of 0 here
+
 function operatorClick() {
     const operator = this.textContent;
 
-    if (currentInput !== '0') {
+    if (currentInput !== '') {
         currentInput += ` ${operator} `;
     }
+    updateDisplay();
+}
+
+function decimalClick() {
+    const decimal = this.textContent;
+    currentInput += decimal;
     updateDisplay();
 }
 
@@ -45,3 +54,5 @@ clearButton.addEventListener('click', clearField);
 operatorButtons.forEach(button => {
     button.addEventListener('click', operatorClick)
 });
+
+decimalButton.addEventListener('click', decimalClick);
