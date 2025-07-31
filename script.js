@@ -1,58 +1,119 @@
-const inputField = document.getElementById('input-field');
-const numberButtons = document.querySelectorAll('.number-btn');
-const clearButton = document.getElementById('clear-btn');
-const operatorButtons = document.querySelectorAll('.operator-btn');
-const decimalButton = document.getElementById('decimal-btn')
+const performCalculation = {
+    '÷': (firstNum, secondNum) => firstNum / secondNum,
+    'X': (firstNum, secondNum) => firstNum * secondNum,
+    '+': (firstNum, secondNum) => firstNum + secondNum,
+    '-': (firstNum, secondNum) => firstNum - secondNum,
+};
 
-let currentInput = '';//Change this to an empty field
-let awaitingNewNumber = false;
+const calculator = {
 
-function updateDisplay() {
-    inputField.value = currentInput;
-}
+    displayValue: '0',
 
-function clearField() {
-    currentInput = '';
-    updateDisplay();
-}
+    firstNum: null,
+    operator: null,
+    awaitingNum: false,
 
-function numberClick() {
-    const digit = this.textContent;
+    inputField: document.getElementById('input-field'),
+    numberButtons: document.querySelectorAll('.number-btn'),
+    clearButton: document.getElementById('clear-btn'),
+    operatorButtons: document.querySelectorAll('.operator-btn'),
+    decimalButton: document.getElementById('decimal-btn'),
+    equalButton: document.getElementById('equal-btn'),
 
-    if (currentInput === '' || awaitingNewNumber) {
-        currentInput = digit;
-        awaitingNewNumber = false;
-    } else {
-        currentInput += digit;
+    updateDisplay() {
+        this.inputField.value = this.displayValue;
+    },
+
+    clearField() {
+        this.displayValue = '0';
+        this.firstNum = null;
+        this.operator = null;
+        this.awaitingNum = false;
+        this.updateDisplay();
+    },
+
+    numberClick(event) {
+        const digit = event.target.textContent;
+        const { displayValue, awaitingNum } = this;
+
+        if (awaitingNum) {
+            this.displayValue = digit;
+            this.awaitingNum = false;
+        } else {
+            this.displayValue = displayValue === '0' ?
+                digit : displayValue + digit;
+        }
+        this.updateDisplay();
+    },
+
+    operatorClick(event) {
+        const operator = event.target.textContent;
+        const inputValue = parseFloat(this.displayValue);
+
+        if (this.operator && this.awaitingNum) {
+            this.operator = operator;
+            return;
+        }
+
+        if (this.firstNum === null && this.displayValue !== '0') {
+            this.firstNum = inputValue;
+        } else if (this.firstNum === null && this.displayValue === '0') {
+            return;
+        }
+
+        this.awaitingNum = true;
+        this.operator = operator;
+    },
+
+    decimalClick(event) {
+        if (this.awaitingNum) return;
+        if (!this.displayValue.includes('.')) {
+            this.displayValue += '.';
+        }
+        this.updateDisplay();
+    },
+
+    equalsClick(event) {
+        const { firstNum, displayValue, operator } = this;
+        const secondNum = parseFloat(displayValue);
+
+        if (operator && firstNum !== null) {
+            console.log('Calculation values:', { firstNum, operator, secondNum });
+            const result = performCalculation[operator](firstNum, secondNum);
+            this.displayValue = String(result);
+            this.firstNum = result;
+            this.operator = null;
+            this.awaitingNum = false;
+        }
+        this.updateDisplay();
+    },
+
+
+    init() {
+        this.numberButtons.forEach(button => {
+            button.addEventListener('click', this.numberClick.bind(this));
+        });
+
+        this.clearButton.addEventListener('click', this.clearField.bind(this));
+
+        this.operatorButtons.forEach(button => {
+            button.addEventListener('click', this.operatorClick.bind(this));
+        });
+
+        this.decimalButton.addEventListener('click', this.decimalClick.bind(this));
+
+        this.equalButton.addEventListener('click', this.equalsClick.bind(this));
+
+        this.updateDisplay();
     }
-    updateDisplay()
-}
+};
 
-//Handle initial input of 0 here
+calculator.init();
 
-function operatorClick() {
-    const operator = this.textContent;
 
-    if (currentInput !== '') {
-        currentInput += ` ${operator} `;
-    }
-    updateDisplay();
-}
 
-function decimalClick() {
-    const decimal = this.textContent;
-    currentInput += decimal;
-    updateDisplay();
-}
 
-numberButtons.forEach(button => {
-    button.addEventListener("click", numberClick)
-});
 
-clearButton.addEventListener('click', clearField);
 
-operatorButtons.forEach(button => {
-    button.addEventListener('click', operatorClick)
-});
 
-decimalButton.addEventListener('click', decimalClick);
+
