@@ -82,9 +82,19 @@ const calculator = {
         const secondNum = parseFloat(displayValue);
 
         if (operator && firstNum !== null) {
-            console.log('Calculation values:', { firstNum, operator, secondNum });
+
             const result = performCalculation[operator](firstNum, secondNum);
+
+            if (operator === '÷' && secondNum === 0) {
+                this.displayValue = 'NOPE!';
+                this.firstNum = null;
+                this.operator = null;
+                this.awaitingNum = false;
+                this.updateDisplay();
+                return;
+            }
             const roundedResult = this.round(result, 8);
+
             this.displayValue = String(roundedResult);
             this.firstNum = roundedResult;
             this.operator = null;
