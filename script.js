@@ -73,6 +73,10 @@ const calculator = {
         this.updateDisplay();
     },
 
+    round(value, decimals) {
+        return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+    },
+
     equalsClick(event) {
         const { firstNum, displayValue, operator } = this;
         const secondNum = parseFloat(displayValue);
@@ -80,8 +84,9 @@ const calculator = {
         if (operator && firstNum !== null) {
             console.log('Calculation values:', { firstNum, operator, secondNum });
             const result = performCalculation[operator](firstNum, secondNum);
-            this.displayValue = String(result);
-            this.firstNum = result;
+            const roundedResult = this.round(result, 8);
+            this.displayValue = String(roundedResult);
+            this.firstNum = roundedResult;
             this.operator = null;
             this.awaitingNum = false;
         }
